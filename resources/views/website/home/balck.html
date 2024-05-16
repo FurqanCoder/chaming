@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Chatbot</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Chat icon styles */
+.chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.chat-icon img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Chat container styles */
+.chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    max-width: 500px; /* Set maximum width for larger screens */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+/* Admin details styles */
+.admin-details {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.admin-info {
+    flex-grow: 1;
+}
+
+.admin-name {
+    font-weight: bold;
+}
+
+.admin-status {
+    color: #4caf50;
+}
+
+/* Chat box styles */
+#chat-box {
+    max-height: 200px; /* Set maximum height for chat box */
+    overflow-y: scroll;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    min-height: 300px;
+
+}
+
+/* User input styles */
+.user-input-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    /* min-height: 700pxs; */
+}
+
+.user-input {
+    flex-grow: 1;
+    padding: 12px; /* Increase padding */
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 25px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow */
+    transition: box-shadow 0.3s ease; /* Add transition */
+}
+
+.user-input:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Highlight on focus */
+}
+
+#emoji-btn,
+#file-input,
+#send-btn {
+    padding: 12px; /* Increase padding */
+    border: none;
+    border-radius: 25px; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Add transition */
+}
+
+#emoji-btn {
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+#file-input {
+    display: none; /* Hide file input */
+}
+
+#send-btn {
+    background-color: #007bff;
+    color: #fff;
+}
+
+#send-btn:hover,
+#emoji-btn:hover {
+    background-color: #0056b3; /* Darken on hover */
+}
+/* Message styles */
+.message {
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+.user-message {
+    background-color: #DCF8C6;
+    color: #006400;
+    align-self: flex-start;
+    padding: auto;
+    margin: 5px 5px 5px 5px;
+    width: 70%;
+    float: left;
+}
+
+.bot-message {
+    background-color: #E2E2E2;
+    color: #000;
+    align-self: flex-end;
+    margin: 5px 5px 5px 5px;
+    width: 70%;
+    float: right;
+}
+
+/* Timestamp styles */
+.timestamp {
+    font-size: 0.8em;
+    color: #777;
+    margin-left: 8px;
+}
+.chatapp{
+    margin: 5px 5px 5px 5px;
+    min-width: none;
+}
+</style>
+<body>
+    <div class="chatapp">
+    <!-- Chat icon -->
+    <div class="chat-icon" id="chat-icon">
+        <img src="chat-icon.png" alt="Chat Icon">
+    </div>
+
+    <!-- Chat container -->
+    <div class="chat-container" id="chat-container">
+        <!-- Admin details bar -->
+        <div class="admin-details">
+            <img src="admin-avatar.png" alt="Admin Avatar" class="admin-avatar">
+            <div class="admin-info">
+                <span class="admin-name">Admin</span>
+                <span class="admin-status">Online</span>
+            </div>
+        </div>
+        
+        <!-- Chat box -->
+        <div id="chat-box"></div>
+
+        <!-- User input -->
+        <div class="user-input-container">
+            <input type="text" id="user-input" class="form-control user-input" placeholder="Type your message...">
+            <button id="emoji-btn" class="btn btn-primary">😀</button>
+            <input type="file" id="file-input" class="file-input">
+            <button id="send-btn" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+</div>
+    <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const chatIcon = document.getElementById('chat-icon');
+    const chatContainer = document.getElementById('chat-container');
+    const emojiBtn = document.getElementById('emoji-btn');
+    const userInput = document.getElementById('user-input');
+    const chatBox = document.getElementById('chat-box');
+
+    chatIcon.addEventListener('click', function() {
+        if (chatContainer.style.display === 'block') {
+            chatContainer.style.display = 'none';
+        } else {
+            chatContainer.style.display = 'block';
+        }
+    });
+
+    emojiBtn.addEventListener('click', function() {
+        userInput.value += '😀'; // Add your desired emoji here
+    });
+
+    function appendMessage(sender, message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = message;
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+        const timestampSpan = document.createElement('span');
+        timestampSpan.textContent = getTime();
+        timestampSpan.classList.add('timestamp');
+        messageDiv.appendChild(timestampSpan);
+        chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function getTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Demo conversation
+        appendMessage('bot', 'Hello! How can I assist you today?');
+        appendMessage('user', 'Hi! I need help with my order.');
+        appendMessage('bot', 'Sure, please provide me with your order number.');
+        appendMessage('user', 'My order number is #123456.');
+        appendMessage('bot', 'Thank you! Let me check the status of your order.');
+        appendMessage('bot', 'Your order is currently in transit and expected to arrive tomorrow.');
+});
+
+
+    </script>
+</body>
+</html>

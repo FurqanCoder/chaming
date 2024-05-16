@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Chat icon styles */
+.chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.chat-icon img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Chat container styles */
+.chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+/* Admin details styles */
+.admin-details {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.admin-info {
+    flex-grow: 1;
+}
+
+.admin-name {
+    font-weight: bold;
+}
+
+.admin-status {
+    color: #4caf50;
+}
+
+/* Chat box styles */
+#chat-box {
+    height: 200px;
+    overflow-y: scroll;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+/* User input styles */
+.user-input-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.user-input {
+    flex-grow: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#emoji-btn,
+#file-input,
+#send-btn {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#emoji-btn {
+    font-size: 20px;
+}
+
+#send-btn {
+    background-color: #007bff;
+    color: #fff;
+}
+
+#send-btn:hover {
+    background-color: #0056b3;
+}
+
+</style>
+<body>
+    <!-- Chat icon -->
+    <div class="chat-icon" id="chat-icon">
+        <img src="chat-icon.png" alt="Chat Icon">
+    </div>
+
+    <!-- Chat container -->
+    <div class="chat-container" id="chat-container">
+        <!-- Admin details bar -->
+        <div class="admin-details">
+            <img src="admin-avatar.png" alt="Admin Avatar" class="admin-avatar">
+            <div class="admin-info">
+                <span class="admin-name">Admin</span>
+                <span class="admin-status">Online</span>
+            </div>
+        </div>
+        
+        <!-- Chat box -->
+        <div id="chat-box"></div>
+
+        <!-- User input -->
+        <div class="user-input-container" style="display: flex;">
+            <input type="text" id="user-input" class="user-input" placeholder="Type your message...">
+            <button id="emoji-btn">😀</button>
+            <input type="file" id="file-input" class="file-input">
+            <button id="send-btn">S</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const chatIcon = document.getElementById('chat-icon');
+    const chatContainer = document.getElementById('chat-container');
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const emojiBtn = document.getElementById('emoji-btn');
+    const fileInput = document.getElementById('file-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    chatIcon.addEventListener('click', function() {
+        chatContainer.style.display = 'block';
+    });
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+        const userMessage = userInput.value.trim();
+        if (userMessage !== '') {
+            appendMessage('user', userMessage);
+            setTimeout(function() {
+                respondToUser(userMessage);
+            }, 1000);
+            userInput.value = '';
+        }
+    }
+
+    function appendMessage(sender, message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+        const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+        messageDiv.textContent = `${message} (${timestamp})`;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function respondToUser(message) {
+        // Add your logic to respond to user messages here
+        // For simplicity, let's just echo back the user's message
+        appendMessage('bot', message);
+    }
+});
+
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Styled Emojionearea Textarea</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css">
+<style>
+    /* WhatsApp style textarea */
+    #textarea {
+        width: 80%; /* Adjust width as needed */
+        height: 100px; /* Adjust height as needed */
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 16px;
+        line-height: 1.5;
+        resize: none;
+        box-sizing: border-box;
+        overflow-y: auto;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Style the emoji picker button */
+    .emojionearea-picker {
+        border-top: 1px solid #ccc;
+        padding: 5px;
+        background-color: #f9f9f9;
+        text-align: right;
+    }
+
+    /* Style the emoji picker */
+    .emojionearea-picker .emojionearea {
+        display: inline-block;
+        vertical-align: middle;
+    }
+</style>
+</head>
+<body>
+<div class="col-6 d-flex" style="display: flex;">
+<textarea id="textarea" placeholder="Type your message..." style="width: 100px;"></textarea>
+<button style="width: 200px;">se</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js" defer></script>
+
+<script type="text/javascript" defer>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Check if jQuery is loaded
+        if (typeof jQuery == 'undefined') {
+            console.error("jQuery is not loaded.");
+            return;
+        }
+
+        // Check if Emojionearea is loaded
+        if (typeof $().emojioneArea !== 'function') {
+            console.error("Emojionearea is not loaded.");
+            return;
+        }
+
+        // Initialize Emojionearea
+        $('#textarea').emojioneArea({
+            pickerPosition: 'bottom',
+            inline: true
+            // Add other options here
+            // See https://github.com/mervick/emojionearea for more options
+        });
+    });
+</script>
+
+</body>
+</html>
