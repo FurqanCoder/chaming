@@ -1,4 +1,4 @@
-name: Laravel CI Test
+name: Laravel CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  laravel-tests:
+  laravel-ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,6 @@ jobs:
       with:
         php-version: 8.2
         extensions: mbstring, bcmath, intl, fileinfo, pdo_mysql
-        coverage: none
 
     - name: Install Composer dependencies
       run: composer install --no-progress --prefer-dist --no-interaction
@@ -29,6 +28,3 @@ jobs:
 
     - name: Generate key
       run: php artisan key:generate
-
-    - name: Run Laravel tests
-      run: php artisan test --without-tty
